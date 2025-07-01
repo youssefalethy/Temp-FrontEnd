@@ -16,7 +16,7 @@ export default function MarketingContentHub() {
         title={"Product launch"} 
         description={"Ensure a successful debut"}
         img={img2}
-        // href={"/productLaunch"}
+        href={"/productLaunch"}
       />
       <HomeTabCard
         title={"Seasonal Sale"} 

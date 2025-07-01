@@ -35,13 +35,18 @@ export default function Page() {
     getHistory();
   }, []);
 
-  if (loading) return <Spin />;
+  if (loading)
+    return (
+      <div className="container mx-auto w-full h-screen flex items-center justify-center">
+        <Spin size="25" />
+      </div>
+    );
 
   return (
     <div className="container mx-auto">
       <h1 className="mb-10 font-bold text-[#2E4056]">History</h1>
 
-      {data.history.map((item, index) => (
+      {data?.history?.map((item, index) => (
         <div
           key={index}
           className="border rounded-lg shadow-sm p-4 mb-6 bg-white max-w-4xl mx-auto"

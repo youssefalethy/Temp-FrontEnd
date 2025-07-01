@@ -31,7 +31,7 @@ export default function Slogan() {
       const result = await res.json();
       setData(result);
       setFavorite(""); // reset selected favorite
-      message.success("Slogan regenerated successfully!");
+      message.success("Slogan generated successfully!");
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -151,8 +151,44 @@ export default function Slogan() {
                 <Select
                   options={[
                     {
-                      value: "Compound Words",
-                      label: "Compound Words (e.g., SnapChat)",
+                      value: "Inspirational",
+                      label: "Inspirational",
+                    },
+                    {
+                      value: "Bold",
+                      label: "Bold",
+                    },
+                    {
+                      value: "Friendly",
+                      label: "Friendly",
+                    },
+                    {
+                      value: "Professional",
+                      label: "Professional",
+                    },
+                    {
+                      value: "Playful",
+                      label: "Playful",
+                    },
+                    {
+                      value: "Urgent",
+                      label: "Urgent",
+                    },
+                    {
+                      value: "Calm",
+                      label: "Calm",
+                    },
+                    {
+                      value: "Nostalgic",
+                      label: "Nostalgic",
+                    },
+                    {
+                      value: "Humorous",
+                      label: "Humorous",
+                    },
+                    {
+                      value: "Motivational",
+                      label: "Motivational",
                     },
                   ]}
                 />
@@ -166,8 +202,44 @@ export default function Slogan() {
                 <Select
                   options={[
                     {
-                      value: "Compound Words",
-                      label: "Compound Words (e.g., SnapChat)",
+                      value: "Innovation",
+                      label: "Innovation",
+                    },
+                    {
+                      value: "Sustainability",
+                      label: "Sustainability",
+                    },
+                    {
+                      value: "Quality",
+                      label: "Quality",
+                    },
+                    {
+                      value: "Trust",
+                      label: "Trust",
+                    },
+                    {
+                      value: "Empowerment",
+                      label: "Empowerment",
+                    },
+                    {
+                      value: "Community",
+                      label: "Community",
+                    },
+                    {
+                      value: "Growth",
+                      label: "Growth",
+                    },
+                    {
+                      value: "Simplicity",
+                      label: "Simplicity",
+                    },
+                    {
+                      value: "Adventure",
+                      label: "Adventure",
+                    },
+                    {
+                      value: "Reliability",
+                      label: "Reliability",
                     },
                   ]}
                 />
@@ -210,7 +282,7 @@ export default function Slogan() {
               ))}
             </div>
             <div className="flex w-full justify-end gap-5 pe-5 mt-10">
-              <Button type="primary" block onClick={handleFavouriteSlogan}>
+              <Button type="primary" block onClick={handleFavouriteSlogan} className="!w-fit">
                 ReGenerate
               </Button>
               <Button

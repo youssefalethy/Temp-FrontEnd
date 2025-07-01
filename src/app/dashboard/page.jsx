@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import {
   Chart as ChartJS,
@@ -13,6 +13,15 @@ import {
   Title,
 } from "chart.js";
 import { Bar, Line, Doughnut, Pie } from "react-chartjs-2";
+import PieChart from "./PieChart";
+import BarProfitAnalysis from "./BarProfitAnalysis";
+import BarRevenue from "./BarRevenue";
+import BarSales from "./BarSales";
+import LineSalesOverTime from "./LineSalesOverTime";
+import LineTimeDate from "./LineTimeDate";
+import HorizontalBarSellingProduct from "./HorizontalBarSellingProduct";
+import DoughnutSales from "./DoughnutSales";
+import BarCustomerSegment from "./BarCustomerSegment";
 
 ChartJS.register(
   CategoryScale,
@@ -176,7 +185,7 @@ const page = () => {
 
   return (
     <div className="container w-[600px] mx-auto">
-      <Bar data={salesOverDay} />
+      {/* <Bar data={salesOverDay} />
       <Line data={monthlySales} />
       <Bar data={revenueSegment} />
       <Doughnut data={doughnutOrders} />
@@ -188,8 +197,18 @@ const page = () => {
         options={{
           indexAxis: "y",
         }}
-      />
-      <Pie data={customerSatisfaction} />
+      /> */}
+      {/* <Pie data={customerSatisfaction} /> */}
+      <h1>Dashboard</h1>
+      <PieChart />
+      <BarProfitAnalysis />
+      <BarRevenue />
+      <BarSales />
+      <LineSalesOverTime />
+      <LineTimeDate />
+      <HorizontalBarSellingProduct />
+      <DoughnutSales />
+      <BarCustomerSegment />
     </div>
   );
 };

@@ -8,7 +8,7 @@ export default function BusinessAwarness() {
   const [data, setData] = useState();
 
   const regenrate = async () => {
-    const token = JSON.parse(localStorage.getItem("user")).access;
+    const token = JSON.parse(localStorage.getItem("user"))?.access;
     const data = await fetch("http://localhost:8000/api/brandawareness/", {
       method: "POST",
       headers: {

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import { Button, Layout, Menu, Dropdown } from "antd";
-import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
+import { UserOutlined, LogoutOutlined, HomeOutlined, MenuOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/authContext";
@@ -15,7 +15,7 @@ const Navbar = () => {
   const param = usePathname();
   const { user } = useAuth();
 
-  useEffect(() => {}, [param]);
+  useEffect(() => { }, [param]);
 
   const menuItems = (
     <Menu
@@ -52,7 +52,7 @@ const Navbar = () => {
 
   return (
     <Layout>
-      {param !== "/signup" && param !== "/login" &&param !=="/Products" && (
+      {param !== "/signup" && param !== "/login" && param !== "/Products" && (
         <Header
           style={{
             display: "flex",
@@ -62,7 +62,7 @@ const Navbar = () => {
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
-            height: "208px",
+            height: "300px",
             padding: "0 2rem",
           }}
         >
@@ -80,34 +80,41 @@ const Navbar = () => {
           )}
         </div> */}
           {param !== "/" && (
-            <div className="flex items-center gap-4 rounded-full ms-auto ">
-              {/* Dropdown on left */}
-              <Dropdown
-                overlay={menuItems}
-                placement="bottomLeft"
-                trigger={["click"]}
-              >
-                <div
-                  className="bg-white text-[#333] shadow rounded-full cursor-pointer"
-                  style={{
-                    width: 40,
-                    height: 40,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
+            <div className="container flex items-top mb-10 justify-between">
+              <div className="cursor-pointer flex items-center gap-2">
+                <MenuOutlined style={{ fontSize: "44px", color: "white" }} />
+                <h2 className="text-white font-bold text-lg">Menu</h2>
+              </div>
+
+              <div className="flex items-center gap-4 rounded-full ms-auto ">
+                {/* Dropdown on left */}
+                <Dropdown
+                  overlay={menuItems}
+                  placement="bottomLeft"
+                  trigger={["click"]}
                 >
-                  <UserOutlined style={{ fontSize: 18 }} />
-                </div>
-              </Dropdown>
-              <h2 className="text-white font-bold text-lg">Brand Name</h2>
-              {/* Brand Name and Logo */}
-              {/* <div className="flex items-center gap-2">
+                  <div
+                    className="bg-white text-[#333] shadow rounded-full cursor-pointer"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <UserOutlined style={{ fontSize: 18 }} />
+                  </div>
+                </Dropdown>
+                <h2 className="text-white font-bold text-lg">Brand Name</h2>
+                {/* Brand Name and Logo */}
+                {/* <div className="flex items-center gap-2">
               <Image src={logo} alt="logo" width={40} height={40} />
               <span className="text-white text-lg font-semibold">
                 Brand Name
               </span>
             </div> */}
+              </div>
             </div>
           )}
         </Header>

@@ -18,19 +18,25 @@ export default function BrandingContentHub() {
           title={"Slogan Generator"}
           description={"Create catchy slogans"}
           img={img2}
-          // href={"/sloganGenerator"}
+          href={"/slogan"}
         />
         <HomeTabCard 
           title={"Logo Creation"}
           description={"Design Stunning Logos"}
           img={img2}
-          // href={"/logoCreation"}
+          href={"/logo"}
         />
         <HomeTabCard 
           title={"Business Overview Generator"}
           description={"Essential startup insights"}
           img={img2}
           href={"/businessOverview"}
+        />
+        <HomeTabCard 
+          title={"Brand Documentation Creation"}
+          description={"Build your brand identity in minutes."}
+          img={img2}
+          href={"/brandDocumentation"}
         />
       </div>
 

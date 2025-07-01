@@ -6,12 +6,15 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import img from "@/styles/images/logonMain.png";
+import { useState } from "react";
 
 export default function Login() {
   const router = useRouter();
   const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const onFinish = async (value) => {
+    setLoading(true);
     const data = await fetch("http://localhost:8000/api/login/", {
       method: "POST",
       headers: {
@@ -22,7 +25,15 @@ export default function Login() {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log("Response data:", data);
+        if (!data?.access) {
+          message.error("Login failed. Please check your credentials.");
+          setLoading(false);
+          return;
+        }
         console.log("Success:", data);
+        setLoading(false);
+        message.success("Login successful!");
         localStorage.setItem("user", JSON.stringify(data));
         router.push("/home");
       })
@@ -97,7 +108,7 @@ export default function Login() {
           </Form.Item> */}
 
               <Form.Item className=" flex justify-center">
-                <Button className="mt-9" type="primary" htmlType="submit" block>
+                <Button className="mt-9" type="primary" htmlType="submit" block loading={loading}>
                   Log in
                 </Button>
               </Form.Item>

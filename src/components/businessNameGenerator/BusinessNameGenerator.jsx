@@ -197,7 +197,7 @@ export default function BusinessNameGenerator() {
               ))}
             </div>
             <div className="flex w-full justify-end gap-5 pe-5 mt-10">
-              <Button type="primary" block onClick={handleReGenerate}>
+              <Button type="primary" block onClick={handleReGenerate} className="!w-fit" >
                 ReGenerate
               </Button>
               <Button

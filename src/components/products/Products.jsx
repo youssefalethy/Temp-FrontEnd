@@ -15,7 +15,7 @@ export default function Products() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token} `,
       },
-      body: JSON.stringify(value),
+      body: JSON.stringify({ ...value, price: +value.price ,cost_price: +value.cost_price }),
     })
       .then((response) => response.json())
       .then((data) => console.log("Success:", data))
@@ -51,7 +51,7 @@ export default function Products() {
 
               <div className="flex jus gap-2 w-full ">
                 <Form.Item name="price" className="w-full">
-                  <Input placeholder=" Price" />
+                  <Input placeholder=" Price" type="number" />
                 </Form.Item>
 
                 <Form.Item name="cost_price" className="w-full">

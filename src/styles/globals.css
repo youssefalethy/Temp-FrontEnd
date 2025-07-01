@@ -24,7 +24,7 @@ h1 {
 }
 
 .ant-menu-dark .ant-menu-item-selected,
-.ant-menu-dark.ant-menu-horizontal>.ant-menu-item-selected:hover {
+.ant-menu-dark.ant-menu-horizontal > .ant-menu-item-selected:hover {
   background-color: transparent !important;
 }
 
@@ -47,13 +47,15 @@ h1 {
   margin-bottom: 15px !important;
 }
 
-.ant-input-outlined {
+.ant-input-outlined,
+.ant-select-selector,
+.ant-picker-outlined {
   padding: 10px !important;
   border-color: #d0d5dd;
   background-color: rgb(249, 250, 251);
 }
 
-.ant-form-item .ant-form-item-label>label {
+.ant-form-item .ant-form-item-label > label {
   font-weight: 500;
   color: var(--primray-black);
 }
@@ -69,12 +71,11 @@ h1 {
 }
 
 /* --------------------- button --------------------- */
-.ant-btn
-{
+.ant-btn {
   height: fit-content !important ;
 }
 .ant-btn.ant-btn-block {
-  width: fit-content !important;
+  /* width: fit-content !important; */
   background-color: var(--primary) !important;
   border-color: var(--primary) !important;
   height: auto;
@@ -84,10 +85,9 @@ h1 {
   padding: 12px 24px !important;
   border-radius: 40px;
 }
-.ant-btn-variant-solid
-{
+.ant-btn-variant-solid {
   height: full;
-  width: fit-content !important;
+  /* width: fit-content !important; */
   background-color: white !important;
   border-color: var(--primary) !important;
   height: auto;
@@ -110,17 +110,17 @@ h1 {
   height: 48px !important;
 }
 
-.businessNameGeneratorWrraper .ant-form-item .ant-form-item-label>label {
+.businessNameGeneratorWrraper .ant-form-item .ant-form-item-label > label {
   color: #5e6366;
   font-size: 12px;
 }
 
 /* --------------------------- antd tabs -------------------------------- */
-.ant-tabs-top>.ant-tabs-nav::before {
+.ant-tabs-top > .ant-tabs-nav::before {
   border-bottom: 1px solid transparent !important;
 }
 
-.ant-tabs>.ant-tabs-nav {
+.ant-tabs > .ant-tabs-nav {
   margin: auto !important;
 }
 

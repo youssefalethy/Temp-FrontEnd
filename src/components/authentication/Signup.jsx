@@ -1,6 +1,6 @@
 "use client";
 import { CloudUploadOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Select, Upload } from "antd";
+import { Button, Form, Input, message, Select, Upload } from "antd";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -10,18 +10,41 @@ import img from "@/styles/images/logonMain.png";
 export default function Signup() {
   const router = useRouter();
   const [imageUrl, setImageUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const onFinish = async (value) => {
-    const data = await fetch("http://localhost:8000/api/register/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(value),
-    })
-      .then((response) => response.json())
-      .then((data) => console.log("Success:", data), router.push("/Products"))
-      .catch((error) => console.error("Error:", error));
+    setLoading(true);
+    try {
+      setLoading(true);
+
+      const response = await fetch("http://localhost:8000/api/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(value),
+      });
+
+      setLoading(false);
+
+      if (!response.ok) {
+        message.error("Registration failed. Please try again.");
+        return;
+      }
+      setLoading(false);
+
+      const data = await response.json();
+      message.success("Registration successful!");
+      console.log("Success:", data);
+
+      router.push("/Products");
+      return data;
+
+    } catch (error) {
+      setLoading(false);
+      console.error("Error:", error);
+      message.error("An error occurred. Please try again.");
+    }
   };
 
   const handleChange = ({ file }) => {
@@ -54,6 +77,7 @@ export default function Signup() {
                 className=" !bg-white"
                 htmlType="submit"
                 block
+                loading={loading}
               >
                 Login
               </Button>
