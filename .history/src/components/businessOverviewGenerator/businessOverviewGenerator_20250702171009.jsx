@@ -16,7 +16,7 @@ export default function BusinessOverview() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token} `,
         },
         body: JSON.stringify({
           ...value,
@@ -26,14 +26,11 @@ export default function BusinessOverview() {
 
       const data = await res.json();
       const { business_overview } = data;
-
       setOverviewData({
-        mission: business_overview?.mission || data.business_overview_and_mission,
-        strategy: business_overview?.strategy || data.market_strategy_and_vision,
-        unique_selling_points:
-          business_overview?.unique_selling_points || data.unique_selling_points,
+        mission: business_overview?.mission,
+        strategy: business_overview?.strategy,
+        unique_selling_points: business_overview?.unique_selling_points,
       });
-
       setDataAdded(true);
     } catch (error) {
       console.error("Error:", error);
@@ -59,7 +56,11 @@ export default function BusinessOverview() {
             style={{ width: "70%", margin: "0 auto" }}
           >
             <div className="grid grid-cols-2 gap-6 mt-16 mb-20">
-              <Form.Item name="year_founded" label="Year Founded">
+              <Form.Item
+                name="year_founded"
+                required={false}
+                label="Year Founded"
+              >
                 <DatePicker
                   picker="year"
                   style={{ width: "100%" }}
@@ -67,45 +68,82 @@ export default function BusinessOverview() {
                 />
               </Form.Item>
 
-              <Form.Item name="business_advantages" label="Business Advantages">
+              <Form.Item
+                name="business_advantages"
+                required={false}
+                label="Business Advantages"
+              >
                 <Select
                   mode="multiple"
                   placeholder="Select business advantages"
                   style={{ width: "100%" }}
                   options={[
-                    { value: "Ethically sourced materials", label: "Ethically sourced materials" },
-                    { value: "Eco-friendly production", label: "Eco-friendly production" },
-                    { value: "Timeless and versatile designs", label: "Timeless and versatile designs" },
+                    {
+                      value: "Ethically sourced materials",
+                      label: "Ethically sourced materials",
+                    },
+                    {
+                      value: "Eco-friendly production",
+                      label: "Eco-friendly production",
+                    },
+                    {
+                      value: "Timeless and versatile designs",
+                      label: "Timeless and versatile designs",
+                    },
                     { value: "Price", label: "Price" },
                     { value: "Quality", label: "Quality" },
                     { value: "Convenience", label: "Convenience" },
                     { value: "Trust & Reputation", label: "Trust & Reputation" },
-                    { value: "Customer Service & Support", label: "Customer Service & Support" },
+                    {
+                      value: "Customer Service & Support",
+                      label: "Customer Service & Support",
+                    },
                   ]}
                 />
               </Form.Item>
 
-              <Form.Item name="business_description" label="Business Description">
+              <Form.Item
+                name="business_description"
+                required={false}
+                label="Business Description"
+              >
                 <Input.TextArea placeholder="Business Description" />
               </Form.Item>
 
-              <Form.Item name="business_goal" label="Business Goals">
+              <Form.Item
+                name="business_goal"
+                required={false}
+                label="Business Goals"
+              >
                 <Input.TextArea placeholder="Business Goals" />
               </Form.Item>
 
-              <Form.Item name="client_category" label="Client Category">
+              <Form.Item
+                name="client_category"
+                required={false}
+                label="Client Category"
+              >
                 <Select
                   style={{ width: "100%" }}
                   options={[
-                    { value: "Individual Consumers", label: "Individual Consumers" },
-                    { value: "Businesses & Organizations", label: "Businesses & Organizations" },
-                    { value: "Government & Public Sector", label: "Government & Public Sector" },
+                    {
+                      value: "Individual Consumers",
+                      label: "Individual Consumers",
+                    },
+                    {
+                      value: "Businesses & Organizations",
+                      label: "Businesses & Organizations",
+                    },
+                    {
+                      value: "Government & Public Sector",
+                      label: "Government & Public Sector",
+                    },
                   ]}
                 />
               </Form.Item>
             </div>
 
-            <Form.Item className="flex justify-end">
+            <Form.Item className="mt- flex justify-end">
               <Button type="primary" htmlType="submit" block loading={loading}>
                 Generate
               </Button>
@@ -130,13 +168,7 @@ export default function BusinessOverview() {
             <ul className="space-y-4">
               {overviewData?.strategy?.map((item, index) => (
                 <li key={index} className="bg-gray-50 p-4 rounded-lg shadow">
-                  {typeof item === "string" ? (
-                    <p className="text-gray-600">{item}</p>
-                  ) : (
-                    <p className="text-gray-600">
-                      <strong>{item.initiative}:</strong> {item.description}
-                    </p>
-                  )}
+                  <p className="text-gray-600">{item}</p>
                 </li>
               ))}
             </ul>
@@ -150,19 +182,13 @@ export default function BusinessOverview() {
             <ul className="space-y-4">
               {overviewData?.unique_selling_points?.map((item, index) => (
                 <li key={index} className="bg-gray-50 p-4 rounded-lg shadow">
-                  {typeof item === "string" ? (
-                    <p className="text-gray-600">{item}</p>
-                  ) : (
-                    <p className="text-gray-600">
-                      <strong>{item.initiative}:</strong> {item.description}
-                    </p>
-                  )}
+                  <p className="text-gray-600">{item}</p>
                 </li>
               ))}
             </ul>
           </div>
         </div>
       )}
-    </div>
-  );
+    </div>
+  );
 }

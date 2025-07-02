@@ -67,20 +67,14 @@ export default function Signup() {
             <h5>have an account?</h5>
             <Link href="/login">
               <Button
-                style={{
-                  backgroundColor: "white !important",
-                  color: "white",
-                  borderRadius: "10px !important",
-                  padding: "20px !important",
-                  height: "20px !important",
-                }}
-                className=" !bg-white"
-                htmlType="submit"
-                block
-                loading={loading}
-              >
-                Login
-              </Button>
+              type="default"
+              className="!text-white !border-white !bg-transparent !rounded-[10px] !px-6 !py-4"
+              htmlType="submit"
+              loading={loading}
+            >
+              Login
+            </Button>
+
             </Link>
           </div>
           <div>

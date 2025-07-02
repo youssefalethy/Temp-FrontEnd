@@ -25,15 +25,11 @@ export default function BusinessOverview() {
       });
 
       const data = await res.json();
-      const { business_overview } = data;
-
       setOverviewData({
-        mission: business_overview?.mission || data.business_overview_and_mission,
-        strategy: business_overview?.strategy || data.market_strategy_and_vision,
-        unique_selling_points:
-          business_overview?.unique_selling_points || data.unique_selling_points,
+        mission: data?.business_overview_and_mission,
+        strategy: data?.market_strategy_and_vision,
+        unique_selling_points: data?.unique_selling_points,
       });
-
       setDataAdded(true);
     } catch (error) {
       console.error("Error:", error);
@@ -116,27 +112,17 @@ export default function BusinessOverview() {
         <div className="container mt-24 mx-auto p-6">
           {/* Mission */}
           <div className="bg-white shadow-2xl rounded-lg p-6 mb-6 border border-gray-200">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 capitalize">
-              Mission
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 capitalize">Mission</h2>
             <p className="text-gray-600">{overviewData?.mission}</p>
           </div>
 
           {/* Strategy */}
           <div className="bg-white shadow-2xl rounded-lg p-6 mb-6 border border-gray-200">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 capitalize">
-              Strategy
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 capitalize">Strategy</h2>
             <ul className="space-y-4">
               {overviewData?.strategy?.map((item, index) => (
                 <li key={index} className="bg-gray-50 p-4 rounded-lg shadow">
-                  {typeof item === "string" ? (
-                    <p className="text-gray-600">{item}</p>
-                  ) : (
-                    <p className="text-gray-600">
-                      <strong>{item.initiative}:</strong> {item.description}
-                    </p>
-                  )}
+                  <p className="text-gray-600">{item}</p>
                 </li>
               ))}
             </ul>
@@ -148,17 +134,26 @@ export default function BusinessOverview() {
               Unique Selling Points
             </h2>
             <ul className="space-y-4">
-              {overviewData?.unique_selling_points?.map((item, index) => (
-                <li key={index} className="bg-gray-50 p-4 rounded-lg shadow">
-                  {typeof item === "string" ? (
-                    <p className="text-gray-600">{item}</p>
-                  ) : (
-                    <p className="text-gray-600">
-                      <strong>{item.initiative}:</strong> {item.description}
-                    </p>
-                  )}
-                </li>
-              ))}
+              {overviewData?.unique_selling_points?.map((item, index) => {
+                if (typeof item === "string") {
+                  return (
+                    <li key={index} className="bg-gray-50 p-4 rounded-lg shadow">
+                      <p className="text-gray-600">{item}</p>
+                    </li>
+                  );
+                } else if (typeof item === "object" && item !== null) {
+                  return (
+                    <li key={index} className="bg-gray-50 p-4 rounded-lg shadow">
+                      <p className="text-lg font-semibold text-gray-700 mb-2">
+                        {item.product}
+                      </p>
+                      <p className="text-gray-600">{item.description}</p>
+                    </li>
+                  );
+                } else {
+                  return null;
+                }
+              })}
             </ul>
           </div>
         </div>

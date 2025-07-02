@@ -69,7 +69,7 @@ export default function Signup() {
               <Button
                 style={{
                   backgroundColor: "white !important",
-                  color: "white",
+                  color: "black",
                   borderRadius: "10px !important",
                   padding: "20px !important",
                   height: "20px !important",

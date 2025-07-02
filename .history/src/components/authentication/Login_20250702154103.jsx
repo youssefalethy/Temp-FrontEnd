@@ -116,17 +116,15 @@ export default function Login() {
           </div>
         </div>
         <div className="col-span-2 bg-[#2E4056] h-full pt-9">
-          <div className="flex items-center justify-center h-full">
-                            <div className="relative w-[500px] h-[500px]">
-                              <Image
-                                src={img}
-                                alt="image"
-                                fill
-                                className="object-contain"
-                                priority
-                              />
-                            </div>
-                  </div>
+          <div className="w-full max-w-[732px] h-[700px] relative">
+            <Image
+              src={img}
+              alt="image"
+              fill
+              className="object-cover rounded"
+              priority
+            />
+          </div>
         </div>
       </div>
     </div>
