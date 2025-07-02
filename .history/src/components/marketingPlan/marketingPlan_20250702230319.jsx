@@ -1,6 +1,6 @@
 "use client";
 import { Button, Form, Input, Upload, message } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import cloud from "@/styles/images/cloud.png";
 import Image from "next/image";
 
@@ -9,29 +9,8 @@ export default function MarketPlan() {
   const [loading, setLoading] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [cachedFormData, setCachedFormData] = useState(null);
-  const [businessId, setBusinessId] = useState(null);
-  const token = JSON.parse(localStorage.getItem("user"))?.access;
 
-  useEffect(() => {
-    const fetchBusinessId = async () => {
-      try {
-        const res = await fetch("http://localhost:8000/api/get-business-id/", {
-          method: "GET",
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const result = await res.json();
-        if (res.ok && result?.business_id) {
-          setBusinessId(result.business_id);
-        } else {
-          message.error("Failed to fetch business ID");
-        }
-      } catch (error) {
-        console.error("Error fetching business ID:", error);
-        message.error("Could not retrieve business ID.");
-      }
-    };
-    fetchBusinessId();
-  }, [token]);
+  const token = JSON.parse(localStorage.getItem("user"))?.access;
 
   const handleSubmission = async (values) => {
     setLoading(true);
@@ -39,44 +18,38 @@ export default function MarketPlan() {
       const formData = new FormData();
       formData.append("sales_excel", fileList[0]);
 
-      const excelRes = await fetch("http://localhost:8000/api/sales-extract/", {
+      const res2 = await fetch("http://localhost:8000/api/sales-extract/", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 
-      const excelResult = await excelRes.json();
-      if (!excelRes.ok) {
-        message.error(excelResult?.detail || "File upload failed");
+      const result2 = await res2.json();
+      if (!res2.ok) {
+        message.error(result2?.detail || "File upload failed");
         setLoading(false);
         return;
       }
 
-      const payload = {
-        business_id: businessId,
-        business_description: values.business_description,
-        goals: values.goals,
-        budget: values.budget.toString(),
-      };
+      delete values.excel_file;
 
-      const planRes = await fetch("http://localhost:8000/api/marketing-plan/", {
+      const res1 = await fetch("http://localhost:8000/api/marketing-plan/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...values, business_id: 4 }),
       });
 
-      const planResult = await planRes.json();
-      if (!planRes.ok) {
-        console.error("Plan error:", planResult);
-        message.error(planResult?.detail || JSON.stringify(planResult));
+      const result1 = await res1.json();
+      if (!res1.ok) {
+        message.error(result1?.detail || "Form submission failed");
         setLoading(false);
         return;
       }
 
-      setDataAdded(planResult);
+      setDataAdded(result1);
       message.success("Marketing Plan generated successfully!");
     } catch (error) {
       console.error("Error:", error);
@@ -110,15 +83,15 @@ export default function MarketPlan() {
         body: JSON.stringify({}),
       });
 
-      const result = await res.json();
       if (!res.ok) {
+        const result = await res.json();
         message.error(result?.detail || "Failed to save plan");
         return;
       }
 
       message.success("Marketing plan saved successfully!");
     } catch (error) {
-      console.error("Save error:", error);
+      console.error("Error saving plan:", error);
       message.error("Something went wrong while saving!");
     }
   };
@@ -177,8 +150,7 @@ export default function MarketPlan() {
                   beforeUpload={(file) => {
                     const isExcel =
                       file.type === "application/vnd.ms-excel" ||
-                      file.type ===
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                      file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
                     if (!isExcel) {
                       message.error("You can only upload Excel files!");
@@ -204,94 +176,84 @@ export default function MarketPlan() {
             </div>
 
             <Form.Item className="flex justify-end mt-8">
-              <Button
-                type="primary"
-                htmlType="submit"
-                block
-                loading={loading}
-                className="h-12 text-lg"
-              >
+              <Button type="primary" htmlType="submit" block loading={loading} className="h-12 text-lg">
                 Generate Marketing Plan
               </Button>
             </Form.Item>
           </Form>
         </>
       ) : (
-        <div className="max-w-[940px] mx-auto py-16">
-          <div className="bg-white p-6 border border-gray-200 rounded-2xl shadow-lg transform -translate-y-40">
-            <h1 className="text-center text-2xl font-bold text-[#1B2559] mb-6">
-              Your Marketing Plan
-            </h1>
+        <>
+          <div className="max-w-[940px] mx-auto py-16">
+            <div className="bg-white p-3 border border-gray-200 rounded-2xl shadow-lg transform -translate-y-40">
+              <h1 className="py-6 text-center text-2xl font-bold text-[#1B2559]">Your Marketing Plan</h1>
+              {Object.entries(dataAdded?.generated_plan || {}).map(
+                ([sectionKey, sectionValue]) => (
+                  <div
+                    key={sectionKey}
+                    className="bg-white shadow-2xl mb-4 rounded-lg p-6 border border-gray-200"
+                  >
+                    <h2 className="text-2xl font-bold text-gray-800 mb-4 capitalize">
+                      {sectionKey?.replaceAll("_", " ")}
+                    </h2>
 
-            {Object.entries(dataAdded?.generated_plan || {}).map(
-              ([sectionKey, sectionValue]) => (
-                <div
-                  key={sectionKey}
-                  className="bg-white shadow-2xl mb-4 rounded-lg p-6 border border-gray-200"
-                >
-                  <h2 className="text-2xl font-bold text-gray-800 mb-4 capitalize">
-                    {sectionKey?.replaceAll("_", " ")}
-                  </h2>
-
-                  {Array.isArray(sectionValue) ? (
-                    <ul className="space-y-2">
-                      {sectionValue.map((item, idx) => (
-                        <li
-                          key={idx}
-                          className="bg-gray-50 p-3 rounded-lg shadow-sm text-gray-600"
-                        >
-                          {item ?? "—"}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : typeof sectionValue === "object" &&
-                    sectionValue !== null ? (
-                    Object.entries(sectionValue).map(([subKey, subItems], i) => (
-                      <div key={i} className="mb-4">
-                        <h3 className="font-semibold text-gray-700 mb-2 capitalize">
-                          {subKey?.replaceAll("_", " ")}
-                        </h3>
-                        <ul className="space-y-2 pl-4">
-                          {(Array.isArray(subItems) ? subItems : [subItems]).map((item, idx) => (
-                            <li
-                              key={idx}
-                              className="bg-gray-50 p-2 rounded shadow-sm text-gray-600"
-                            >
-                              {item ?? "—"}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-600">{sectionValue ?? "—"}</p>
-                  )}
-                </div>
-              )
-            )}
-
-            {/* ✅ Buttons INSIDE the card */}
-            <div className="flex justify-end items-center gap-4 mt-6">
-              <Button
-                type="primary"
-                className="!bg-white border !text-black"
-                onClick={regenerate}
-              >
-                Regenerate
-              </Button>
-              <div className="flex flex-col gap-2">
-                <Button
-                  type="primary"
-                  block
-                  className="!w-24"
-                  onClick={handleSave}
-                >
-                  Save
-                </Button>
-            </div>
+                    {Array.isArray(sectionValue) ? (
+                      <ul className="space-y-2">
+                        {sectionValue.map((item, idx) => (
+                          <li
+                            key={idx}
+                            className="bg-gray-50 p-3 rounded-lg shadow-sm text-gray-600"
+                          >
+                            {item ?? "—"}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : typeof sectionValue === "object" &&
+                      sectionValue !== null ? (
+                      Object.entries(sectionValue).map(
+                        ([subKey, subItems], i) => (
+                          <div key={i} className="mb-4">
+                            <h3 className="font-semibold text-gray-700 mb-2 capitalize">
+                              {subKey?.replaceAll("_", " ")}
+                            </h3>
+                            <ul className="space-y-2 pl-4">
+                              {(Array.isArray(subItems)
+                                ? subItems
+                                : [subItems]
+                              ).map((item, idx) => (
+                                <li
+                                  key={idx}
+                                  className="bg-gray-50 p-2 rounded shadow-sm text-gray-600"
+                                >
+                                  {item ?? "—"}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )
+                      )
+                    ) : (
+                      <p className="text-gray-600">{sectionValue ?? "—"}</p>
+                    )}
+                  </div>
+                )
+              )}
             </div>
           </div>
-        </div>
+
+          <div className="flex w-full justify-end gap-5 pe-5 transform -translate-y-40 mb-3">
+            <Button type="primary" onClick={regenerate}>
+              ReGenerate
+            </Button>
+            <Button
+              className="!bg-white border !text-black"
+              type="primary"
+              onClick={handleSave}
+            >
+              Save
+            </Button>
+          </div>
+        </>
       )}
     </div>
   );

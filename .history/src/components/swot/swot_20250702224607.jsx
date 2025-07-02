@@ -268,28 +268,25 @@ export default function SeasonalSale() {
               </div>
             </div>
 
-            <div className="flex w-full justify-end items-end gap-5 pe-5 mt-10">
-              <Button
-                type="primary"
-                className="!bg-white border !text-black"
-                onClick={handleRegenerate}
-              >
-                Regenerate
+            <div className="flex justify-end gap-4 mt-8 pe-3">
+              <Button type="primary" className="!bg-white border !text-black" onClick={reGenerate}>
+                ReGenerate
               </Button>
               <div className="flex flex-col gap-2">
                 <Button
                   type="primary"
                   block
                   className="!w-24"
-                  onClick={handleSave}
+                  onClick={handleSaveSlogan}
                 >
                   Save
                 </Button>
-              </div>
             </div>
           </div>
         </div>
+        </div>
       )}
+
     </div>
   );
 }

@@ -12,13 +12,17 @@ export default function MarketPlan() {
   const [businessId, setBusinessId] = useState(null);
   const token = JSON.parse(localStorage.getItem("user"))?.access;
 
+  // Fetch business_id once on mount
   useEffect(() => {
     const fetchBusinessId = async () => {
       try {
         const res = await fetch("http://localhost:8000/api/get-business-id/", {
           method: "GET",
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
+
         const result = await res.json();
         if (res.ok && result?.business_id) {
           setBusinessId(result.business_id);
@@ -30,12 +34,15 @@ export default function MarketPlan() {
         message.error("Could not retrieve business ID.");
       }
     };
+
     fetchBusinessId();
   }, [token]);
 
   const handleSubmission = async (values) => {
     setLoading(true);
+
     try {
+      // Upload Excel file first
       const formData = new FormData();
       formData.append("sales_excel", fileList[0]);
 
@@ -52,8 +59,10 @@ export default function MarketPlan() {
         return;
       }
 
+      delete values.excel_file;
+
       const payload = {
-        business_id: businessId,
+        business_id: businessId, // ✅ Correct field name
         business_description: values.business_description,
         goals: values.goals,
         budget: values.budget.toString(),
@@ -217,65 +226,71 @@ export default function MarketPlan() {
           </Form>
         </>
       ) : (
-        <div className="max-w-[940px] mx-auto py-16">
-          <div className="bg-white p-6 border border-gray-200 rounded-2xl shadow-lg transform -translate-y-40">
-            <h1 className="text-center text-2xl font-bold text-[#1B2559] mb-6">
-              Your Marketing Plan
-            </h1>
+        <>
+          <div className="max-w-[940px] mx-auto py-16">
+            <div className="bg-white p-6 border border-gray-200 rounded-2xl shadow-lg transform -translate-y-40">
+              <h1 className="text-center text-2xl font-bold text-[#1B2559] mb-6">
+                Your Marketing Plan
+              </h1>
+              {Object.entries(dataAdded?.generated_plan || {}).map(
+                ([sectionKey, sectionValue]) => (
+                  <div
+                    key={sectionKey}
+                    className="bg-white shadow-2xl mb-4 rounded-lg p-6 border border-gray-200"
+                  >
+                    <h2 className="text-2xl font-bold text-gray-800 mb-4 capitalize">
+                      {sectionKey?.replaceAll("_", " ")}
+                    </h2>
 
-            {Object.entries(dataAdded?.generated_plan || {}).map(
-              ([sectionKey, sectionValue]) => (
-                <div
-                  key={sectionKey}
-                  className="bg-white shadow-2xl mb-4 rounded-lg p-6 border border-gray-200"
-                >
-                  <h2 className="text-2xl font-bold text-gray-800 mb-4 capitalize">
-                    {sectionKey?.replaceAll("_", " ")}
-                  </h2>
+                    {Array.isArray(sectionValue) ? (
+                      <ul className="space-y-2">
+                        {sectionValue.map((item, idx) => (
+                          <li
+                            key={idx}
+                            className="bg-gray-50 p-3 rounded-lg shadow-sm text-gray-600"
+                          >
+                            {item ?? "—"}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : typeof sectionValue === "object" &&
+                      sectionValue !== null ? (
+                      Object.entries(sectionValue).map(
+                        ([subKey, subItems], i) => (
+                          <div key={i} className="mb-4">
+                            <h3 className="font-semibold text-gray-700 mb-2 capitalize">
+                              {subKey?.replaceAll("_", " ")}
+                            </h3>
+                            <ul className="space-y-2 pl-4">
+                              {(Array.isArray(subItems)
+                                ? subItems
+                                : [subItems]
+                              ).map((item, idx) => (
+                                <li
+                                  key={idx}
+                                  className="bg-gray-50 p-2 rounded shadow-sm text-gray-600"
+                                >
+                                  {item ?? "—"}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )
+                      )
+                    ) : (
+                      <p className="text-gray-600">{sectionValue ?? "—"}</p>
+                    )}
+                  </div>
+                )
+              )}
+            </div>
+          </div>
 
-                  {Array.isArray(sectionValue) ? (
-                    <ul className="space-y-2">
-                      {sectionValue.map((item, idx) => (
-                        <li
-                          key={idx}
-                          className="bg-gray-50 p-3 rounded-lg shadow-sm text-gray-600"
-                        >
-                          {item ?? "—"}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : typeof sectionValue === "object" &&
-                    sectionValue !== null ? (
-                    Object.entries(sectionValue).map(([subKey, subItems], i) => (
-                      <div key={i} className="mb-4">
-                        <h3 className="font-semibold text-gray-700 mb-2 capitalize">
-                          {subKey?.replaceAll("_", " ")}
-                        </h3>
-                        <ul className="space-y-2 pl-4">
-                          {(Array.isArray(subItems) ? subItems : [subItems]).map((item, idx) => (
-                            <li
-                              key={idx}
-                              className="bg-gray-50 p-2 rounded shadow-sm text-gray-600"
-                            >
-                              {item ?? "—"}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-600">{sectionValue ?? "—"}</p>
-                  )}
-                </div>
-              )
-            )}
-
-            {/* ✅ Buttons INSIDE the card */}
-            <div className="flex justify-end items-center gap-4 mt-6">
+           <div className="flex w-full justify-end items-end gap-5 pe-5 mt-10">
               <Button
                 type="primary"
                 className="!bg-white border !text-black"
-                onClick={regenerate}
+                onClick={h}
               >
                 Regenerate
               </Button>
@@ -288,10 +303,9 @@ export default function MarketPlan() {
                 >
                   Save
                 </Button>
+              </div>
             </div>
-            </div>
-          </div>
-        </div>
+        </>
       )}
     </div>
   );

@@ -55,40 +55,10 @@ export default function BusinessAwarness() {
     }
   };
 
-  const handleSave = async () => {
-    const token = JSON.parse(localStorage.getItem("user"))?.access;
-
-    if (!token) {
-      message.error("You must be logged in to save content.");
-      return;
-    }
-
-    try {
-      const response = await fetch("http://localhost:8000/api/save-brand-awareness-content/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          content: data?.generated_content,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        message.success("Brand awareness content saved successfully!");
-      } else {
-        console.error(result);
-        message.error("Failed to save content.");
-      }
-    } catch (error) {
-      console.error("Error saving content:", error);
-      message.error("Something went wrong while saving.");
-    }
+  const handleSave = () => {
+    message.success("Saved! (Mock action)");
+    // You can implement real API call here
   };
-
 
   return (
     <div className="mt-5 businessNameGeneratorWrraper">

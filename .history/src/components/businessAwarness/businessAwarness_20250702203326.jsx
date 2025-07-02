@@ -1,7 +1,6 @@
 "use client";
 import { Button, Form, Select, message } from "antd";
 import { useState } from "react";
-import ReactMarkdown from "react-markdown";
 
 export default function BusinessAwarness() {
   const [savedValues, setSavedValues] = useState();
@@ -55,40 +54,10 @@ export default function BusinessAwarness() {
     }
   };
 
-  const handleSave = async () => {
-    const token = JSON.parse(localStorage.getItem("user"))?.access;
-
-    if (!token) {
-      message.error("You must be logged in to save content.");
-      return;
-    }
-
-    try {
-      const response = await fetch("http://localhost:8000/api/save-brand-awareness-content/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          content: data?.generated_content,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        message.success("Brand awareness content saved successfully!");
-      } else {
-        console.error(result);
-        message.error("Failed to save content.");
-      }
-    } catch (error) {
-      console.error("Error saving content:", error);
-      message.error("Something went wrong while saving.");
-    }
+  const handleSave = () => {
+    message.success("Saved! (Mock action)");
+    // You can implement real API call here
   };
-
 
   return (
     <div className="mt-5 businessNameGeneratorWrraper">
@@ -164,9 +133,9 @@ export default function BusinessAwarness() {
               <h2 className="text-[#1B2559] text-lg font-bold mb-4">
                 {data?.business?.industry || "Your Industry"}
               </h2>
-              <div className="prose prose-lg max-w-full text-[#1B2559]">
-                <ReactMarkdown>{data?.generated_content || ""}</ReactMarkdown>
-              </div>
+              <p className="text-[#1B2559] text-base leading-7">
+                {data?.generated_content}
+              </p>
             </div>
 
             <div className="flex w-full justify-end items-end gap-5 pe-5 mt-10">

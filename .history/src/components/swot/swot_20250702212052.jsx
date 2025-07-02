@@ -100,7 +100,7 @@ export default function SeasonalSale() {
 
   const handleSave = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/save-swot-analysis/", {
+      const res = await fetch("http://localhost:8000/api/save-swot/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -268,7 +268,7 @@ export default function SeasonalSale() {
               </div>
             </div>
 
-            <div className="flex w-full justify-end items-end gap-5 pe-5 mt-10">
+            <div className="flex justify-end gap-4 mt-8 pe-3">
               <Button
                 type="primary"
                 className="!bg-white border !text-black"
@@ -276,16 +276,9 @@ export default function SeasonalSale() {
               >
                 Regenerate
               </Button>
-              <div className="flex flex-col gap-2">
-                <Button
-                  type="primary"
-                  block
-                  className="!w-24"
-                  onClick={handleSave}
-                >
-                  Save
-                </Button>
-              </div>
+              <Button type="primary" className="!w-24" onClick={handleSave}>
+                Save
+              </Button>
             </div>
           </div>
         </div>

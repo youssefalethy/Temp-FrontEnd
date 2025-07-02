@@ -273,22 +273,15 @@ export default function MarketPlan() {
             {/* ✅ Buttons INSIDE the card */}
             <div className="flex justify-end items-center gap-4 mt-6">
               <Button
-                type="primary"
-                className="!bg-white border !text-black"
+                type="default"
                 onClick={regenerate}
+                className="border border-gray-300 text-black"
               >
                 Regenerate
               </Button>
-              <div className="flex flex-col gap-2">
-                <Button
-                  type="primary"
-                  block
-                  className="!w-24"
-                  onClick={handleSave}
-                >
-                  Save
-                </Button>
-            </div>
+              <Button type="primary" onClick={handleSave}>
+                Save
+              </Button>
             </div>
           </div>
         </div>

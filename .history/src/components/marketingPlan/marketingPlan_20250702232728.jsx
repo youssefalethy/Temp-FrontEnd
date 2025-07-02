@@ -10,6 +10,7 @@ export default function MarketPlan() {
   const [fileList, setFileList] = useState([]);
   const [cachedFormData, setCachedFormData] = useState(null);
   const [businessId, setBusinessId] = useState(null);
+
   const token = JSON.parse(localStorage.getItem("user"))?.access;
 
   useEffect(() => {
@@ -19,6 +20,7 @@ export default function MarketPlan() {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });
+
         const result = await res.json();
         if (res.ok && result?.business_id) {
           setBusinessId(result.business_id);
@@ -30,6 +32,7 @@ export default function MarketPlan() {
         message.error("Could not retrieve business ID.");
       }
     };
+
     fetchBusinessId();
   }, [token]);
 
@@ -53,7 +56,7 @@ export default function MarketPlan() {
       }
 
       const payload = {
-        business_id: businessId,
+        business: businessId,
         business_description: values.business_description,
         goals: values.goals,
         budget: values.budget.toString(),
@@ -177,8 +180,7 @@ export default function MarketPlan() {
                   beforeUpload={(file) => {
                     const isExcel =
                       file.type === "application/vnd.ms-excel" ||
-                      file.type ===
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                      file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
                     if (!isExcel) {
                       message.error("You can only upload Excel files!");
@@ -244,8 +246,7 @@ export default function MarketPlan() {
                         </li>
                       ))}
                     </ul>
-                  ) : typeof sectionValue === "object" &&
-                    sectionValue !== null ? (
+                  ) : typeof sectionValue === "object" && sectionValue !== null ? (
                     Object.entries(sectionValue).map(([subKey, subItems], i) => (
                       <div key={i} className="mb-4">
                         <h3 className="font-semibold text-gray-700 mb-2 capitalize">
@@ -270,8 +271,8 @@ export default function MarketPlan() {
               )
             )}
 
-            {/* ✅ Buttons INSIDE the card */}
-            <div className="flex justify-end items-center gap-4 mt-6">
+            {/* Buttons Inside Card */}
+            <div className="flex w-full justify-end items-center gap-5 mt-6">
               <Button
                 type="primary"
                 className="!bg-white border !text-black"
@@ -279,16 +280,9 @@ export default function MarketPlan() {
               >
                 Regenerate
               </Button>
-              <div className="flex flex-col gap-2">
-                <Button
-                  type="primary"
-                  block
-                  className="!w-24"
-                  onClick={handleSave}
-                >
-                  Save
-                </Button>
-            </div>
+              <Button type="primary" className="!w-24" onClick={handleSave}>
+                Save
+              </Button>
             </div>
           </div>
         </div>

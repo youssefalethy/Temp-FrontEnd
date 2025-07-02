@@ -10,6 +10,28 @@ export default function EnhancmentGuide() {
 
   const token = JSON.parse(localStorage.getItem("user"))?.access;
 
+  // Prepare business_advantages as object with boolean flags
+  const transformAdvantages = (selected) => {
+    const keys = ["quality", "customer_service", "pricing"];
+    const labels = {
+      "Premium Quality": "quality",
+      "24/7 Support": "customer_service",
+      "Competitive Pricing": "pricing",
+    };
+
+    const result = {};
+    Object.values(labels).forEach((key) => {
+      result[key] = false;
+    });
+
+    selected.forEach((label) => {
+      const key = labels[label];
+      if (key) result[key] = true;
+    });
+
+    return result;
+  };
+
   const generateGuide = async (formDataRaw) => {
     setLoading(true);
 
@@ -18,9 +40,7 @@ export default function EnhancmentGuide() {
       marketing_channel: formDataRaw.marketing_channel,
       sales_channel: formDataRaw.sales_channel,
       challenges: formDataRaw.challenges,
-      business_advantages: {
-        advantages: formDataRaw.business_advantages || [],
-      },
+      business_advantages: transformAdvantages(formDataRaw.business_advantages),
     };
 
     try {
@@ -40,7 +60,6 @@ export default function EnhancmentGuide() {
         message.success("Enhancement guide generated successfully!");
       } else {
         message.error(result?.detail || "Failed to generate enhancement guide.");
-        console.error("Response:", result);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -109,12 +128,12 @@ export default function EnhancmentGuide() {
                 <Select
                   placeholder="Select a budget range"
                   options={[
-                    { value: "$1,000 - $5,000", label: "$1,000 - $5,000" },
-                    { value: "$5,000 - $10,000", label: "$5,000 - $10,000" },
-                    { value: "$10,000 - $25,000", label: "$10,000 - $25,000" },
-                    { value: "$25,000 - $50,000", label: "$25,000 - $50,000" },
-                    { value: "$50,000 - $100,000", label: "$50,000 - $100,000" },
-                    { value: "Over $100,000", label: "Over $100,000" },
+                    { value: "Under 1K", label: "Under $1,000" },
+                    { value: "1K - 5K", label: "$1,000 - $5,000" },
+                    { value: "5K - 20K", label: "$5,000 - $20,000" },
+                    { value: "20K - 50K", label: "$20,000 - $50,000" },
+                    { value: "50K - 100K", label: "$50,000 - $100,000" },
+                    { value: "Over 100K", label: "Over $100,000" },
                   ]}
                 />
               </Form.Item>
@@ -128,11 +147,9 @@ export default function EnhancmentGuide() {
                   mode="multiple"
                   placeholder="Select advantages"
                   options={[
-                    { value: "Strong brand recognition", label: "Strong brand recognition" },
-                    { value: "High customer loyalty", label: "High customer loyalty" },
-                    { value: "Innovative product design", label: "Innovative product design" },
-                    { value: "Scalable operations", label: "Scalable operations" },
-                    { value: "Established distribution network", label: "Established distribution network" },
+                    { value: "Premium Quality", label: "Premium Quality" },
+                    { value: "24/7 Support", label: "24/7 Support" },
+                    { value: "Competitive Pricing", label: "Competitive Pricing" },
                   ]}
                 />
               </Form.Item>
@@ -145,11 +162,11 @@ export default function EnhancmentGuide() {
                 <Select
                   placeholder="Select a marketing channel"
                   options={[
-                    { value: "Social Media Advertising", label: "Social Media Advertising" },
+                    { value: "Social Media", label: "Social Media" },
+                    { value: "Search Engine Ads", label: "Search Engine Ads" },
                     { value: "Email Campaigns", label: "Email Campaigns" },
-                    { value: "Content Marketing", label: "Content Marketing" },
-                    { value: "TV/Radio Ads", label: "TV/Radio Ads" },
                     { value: "Influencer Marketing", label: "Influencer Marketing" },
+                    { value: "Offline Events", label: "Offline Events" },
                   ]}
                 />
               </Form.Item>
@@ -170,10 +187,10 @@ export default function EnhancmentGuide() {
                 <Select
                   placeholder="Select a sales channel"
                   options={[
-                    { value: "E-commerce website", label: "E-commerce website" },
-                    { value: "Retail store", label: "Retail store" },
-                    { value: "B2B sales team", label: "B2B sales team" },
-                    { value: "Social media selling", label: "Social media selling" },
+                    { value: "E-Commerce", label: "E-Commerce" },
+                    { value: "Retail Store", label: "Retail Store" },
+                    { value: "Social Commerce", label: "Social Commerce" },
+                    { value: "Phone Orders", label: "Phone Orders" },
                   ]}
                 />
               </Form.Item>
@@ -187,8 +204,8 @@ export default function EnhancmentGuide() {
           </Form>
         </>
       ) : (
-        <div className="max-w-[940px] mx-auto py-16">
-          <div className="bg-white p-6 border border-gray-200 rounded-2xl shadow-lg transform -translate-y-40">
+        <div className="container mt-24 mx-auto p-6">
+          <div className="bg-white p-6 border border-gray-200 rounded-2xl shadow-lg">
             <h1 className="text-center text-2xl font-bold text-[#1B2559] mb-6">
               Your Business Enhancement Guide
             </h1>
@@ -256,20 +273,17 @@ export default function EnhancmentGuide() {
               </div>
             ))}
 
-            {/* ✅ Buttons - like Marketing Plan style */}
             <div className="flex justify-end items-center gap-4 mt-6">
               <Button
-                type="primary"
-                className="!bg-white border !text-black"
+                type="default"
                 onClick={regenerate}
+                className="border border-gray-300 text-black"
               >
                 Regenerate
               </Button>
-              <div className="flex flex-col gap-2">
-                <Button type="primary" block className="!w-24" onClick={handleSave}>
-                  Save
-                </Button>
-              </div>
+              <Button type="primary" onClick={handleSave}>
+                Save
+              </Button>
             </div>
           </div>
         </div>

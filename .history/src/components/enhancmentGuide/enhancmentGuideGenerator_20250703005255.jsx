@@ -187,8 +187,8 @@ export default function EnhancmentGuide() {
           </Form>
         </>
       ) : (
-        <div className="max-w-[940px] mx-auto py-16">
-          <div className="bg-white p-6 border border-gray-200 rounded-2xl shadow-lg transform -translate-y-40">
+        <div className="container mt-24 mx-auto p-6">
+          <div className="bg-white p-6 border border-gray-200 rounded-2xl shadow-lg">
             <h1 className="text-center text-2xl font-bold text-[#1B2559] mb-6">
               Your Business Enhancement Guide
             </h1>
@@ -256,20 +256,17 @@ export default function EnhancmentGuide() {
               </div>
             ))}
 
-            {/* ✅ Buttons - like Marketing Plan style */}
             <div className="flex justify-end items-center gap-4 mt-6">
               <Button
-                type="primary"
-                className="!bg-white border !text-black"
+                type="default"
                 onClick={regenerate}
+                className="border border-gray-300 text-black"
               >
                 Regenerate
               </Button>
-              <div className="flex flex-col gap-2">
-                <Button type="primary" block className="!w-24" onClick={handleSave}>
-                  Save
-                </Button>
-              </div>
+              <Button type="primary" onClick={handleSave}>
+                Save
+              </Button>
             </div>
           </div>
         </div>

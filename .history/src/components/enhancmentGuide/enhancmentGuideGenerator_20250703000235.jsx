@@ -10,19 +10,9 @@ export default function EnhancmentGuide() {
 
   const token = JSON.parse(localStorage.getItem("user"))?.access;
 
-  const generateGuide = async (formDataRaw) => {
+  // ⬇️ Handles the actual generation request
+  const generateGuide = async (formData) => {
     setLoading(true);
-
-    const payload = {
-      project_budget_range: formDataRaw.project_budget_range,
-      marketing_channel: formDataRaw.marketing_channel,
-      sales_channel: formDataRaw.sales_channel,
-      challenges: formDataRaw.challenges,
-      business_advantages: {
-        advantages: formDataRaw.business_advantages || [],
-      },
-    };
-
     try {
       const response = await fetch("http://localhost:8000/api/businessenhacementguide/", {
         method: "POST",
@@ -30,7 +20,7 @@ export default function EnhancmentGuide() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(formData),
       });
 
       const result = await response.json();
@@ -40,7 +30,6 @@ export default function EnhancmentGuide() {
         message.success("Enhancement guide generated successfully!");
       } else {
         message.error(result?.detail || "Failed to generate enhancement guide.");
-        console.error("Response:", result);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -50,11 +39,13 @@ export default function EnhancmentGuide() {
     }
   };
 
+  // ⬇️ On form submit
   const onFinish = async (values) => {
     setCachedFormData(values);
     await generateGuide(values);
   };
 
+  // ⬇️ Only regenerates using cached data
   const regenerate = async () => {
     if (!cachedFormData) return message.error("No previous data to regenerate.");
     await generateGuide(cachedFormData);
@@ -62,7 +53,7 @@ export default function EnhancmentGuide() {
 
   const handleSave = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/save-enhancement-guide/", {
+      const res = await fetch("http://localhost:8000/api/save-business-enhancement-guide/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -93,7 +84,6 @@ export default function EnhancmentGuide() {
             Unlock actionable strategies and tools to streamline operations, <br />
             boost efficiency, and drive growth for your business
           </h3>
-
           <Form
             name="enhancement_form"
             layout="vertical"
@@ -107,14 +97,11 @@ export default function EnhancmentGuide() {
                 rules={[{ required: true, message: "Please select a budget range." }]}
               >
                 <Select
-                  placeholder="Select a budget range"
                   options={[
-                    { value: "$1,000 - $5,000", label: "$1,000 - $5,000" },
-                    { value: "$5,000 - $10,000", label: "$5,000 - $10,000" },
-                    { value: "$10,000 - $25,000", label: "$10,000 - $25,000" },
-                    { value: "$25,000 - $50,000", label: "$25,000 - $50,000" },
-                    { value: "$50,000 - $100,000", label: "$50,000 - $100,000" },
-                    { value: "Over $100,000", label: "Over $100,000" },
+                    { value: "Under 5K", label: "Under $5,000" },
+                    { value: "5K - 20K", label: "$5,000 - $20,000" },
+                    { value: "20K - 100K", label: "$20,000 - $100,000" },
+                    { value: "Over 100K", label: "Over $100,000" },
                   ]}
                 />
               </Form.Item>
@@ -122,34 +109,35 @@ export default function EnhancmentGuide() {
               <Form.Item
                 name="business_advantages"
                 label="Business Advantages"
-                rules={[{ required: true, message: "Please select advantages." }]}
+                rules={[{ required: true, message: "Please select an advantage." }]}
               >
                 <Select
                   mode="multiple"
                   placeholder="Select advantages"
                   options={[
-                    { value: "Strong brand recognition", label: "Strong brand recognition" },
-                    { value: "High customer loyalty", label: "High customer loyalty" },
-                    { value: "Innovative product design", label: "Innovative product design" },
-                    { value: "Scalable operations", label: "Scalable operations" },
-                    { value: "Established distribution network", label: "Established distribution network" },
+                    { value: "Competitive Pricing", label: "Competitive Pricing" },
+                    { value: "Premium Quality", label: "Premium Quality" },
+                    { value: "24/7 Support", label: "24/7 Support" },
+                    { value: "Brand Trust", label: "Brand Trust" },
+                    { value: "Fast Delivery", label: "Fast Delivery" },
                   ]}
                 />
               </Form.Item>
 
               <Form.Item
                 name="marketing_channel"
-                label="Marketing Channel"
-                rules={[{ required: true, message: "Please select a marketing channel." }]}
+                label="Marketing Channels"
+                rules={[{ required: true, message: "Please select at least one channel." }]}
               >
                 <Select
-                  placeholder="Select a marketing channel"
+                  mode="multiple"
+                  placeholder="Select channels"
                   options={[
-                    { value: "Social Media Advertising", label: "Social Media Advertising" },
+                    { value: "Social Media", label: "Social Media" },
+                    { value: "Search Engine Ads", label: "Search Engine Ads" },
                     { value: "Email Campaigns", label: "Email Campaigns" },
-                    { value: "Content Marketing", label: "Content Marketing" },
-                    { value: "TV/Radio Ads", label: "TV/Radio Ads" },
                     { value: "Influencer Marketing", label: "Influencer Marketing" },
+                    { value: "Offline Events", label: "Offline Events" },
                   ]}
                 />
               </Form.Item>
@@ -159,21 +147,22 @@ export default function EnhancmentGuide() {
                 label="Challenges"
                 rules={[{ required: true, message: "Please describe your challenges." }]}
               >
-                <Input.TextArea placeholder="Describe your business challenges..." />
+                <Input.TextArea placeholder="What are the business challenges you're facing?" />
               </Form.Item>
 
               <Form.Item
                 name="sales_channel"
-                label="Sales Channel"
-                rules={[{ required: true, message: "Please select a sales channel." }]}
+                label="Sales Channels"
+                rules={[{ required: true, message: "Please select at least one sales channel." }]}
               >
                 <Select
-                  placeholder="Select a sales channel"
+                  mode="multiple"
+                  placeholder="Select sales channels"
                   options={[
-                    { value: "E-commerce website", label: "E-commerce website" },
-                    { value: "Retail store", label: "Retail store" },
-                    { value: "B2B sales team", label: "B2B sales team" },
-                    { value: "Social media selling", label: "Social media selling" },
+                    { value: "E-Commerce", label: "E-Commerce" },
+                    { value: "Retail Store", label: "Retail Store" },
+                    { value: "Social Commerce", label: "Social Commerce" },
+                    { value: "Phone Orders", label: "Phone Orders" },
                   ]}
                 />
               </Form.Item>
@@ -187,8 +176,8 @@ export default function EnhancmentGuide() {
           </Form>
         </>
       ) : (
-        <div className="max-w-[940px] mx-auto py-16">
-          <div className="bg-white p-6 border border-gray-200 rounded-2xl shadow-lg transform -translate-y-40">
+        <div className="container mt-24 mx-auto p-6">
+          <div className="bg-white p-6 border border-gray-200 rounded-2xl shadow-lg">
             <h1 className="text-center text-2xl font-bold text-[#1B2559] mb-6">
               Your Business Enhancement Guide
             </h1>
@@ -256,20 +245,17 @@ export default function EnhancmentGuide() {
               </div>
             ))}
 
-            {/* ✅ Buttons - like Marketing Plan style */}
             <div className="flex justify-end items-center gap-4 mt-6">
               <Button
-                type="primary"
-                className="!bg-white border !text-black"
+                type="default"
                 onClick={regenerate}
+                className="border border-gray-300 text-black"
               >
                 Regenerate
               </Button>
-              <div className="flex flex-col gap-2">
-                <Button type="primary" block className="!w-24" onClick={handleSave}>
-                  Save
-                </Button>
-              </div>
+              <Button type="primary" onClick={handleSave}>
+                Save
+              </Button>
             </div>
           </div>
         </div>

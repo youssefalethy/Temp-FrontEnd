@@ -1,15 +1,12 @@
 "use client";
 import { Button, Form, Select, message } from "antd";
 import { useState } from "react";
-import ReactMarkdown from "react-markdown";
 
 export default function BusinessAwarness() {
   const [savedValues, setSavedValues] = useState();
   const [data, setData] = useState();
-  const [loading, setLoading] = useState(false);
 
   const regenrate = async () => {
-    setLoading(true);
     const token = JSON.parse(localStorage.getItem("user"))?.access;
     try {
       const response = await fetch("http://localhost:8000/api/brandawareness/", {
@@ -26,13 +23,10 @@ export default function BusinessAwarness() {
       message.success("Brand Awareness regenerated successfully!");
     } catch (error) {
       console.error("Error:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
   const onFinish = async (value) => {
-    setLoading(true);
     const token = JSON.parse(localStorage.getItem("user"))?.access;
     try {
       const response = await fetch("http://localhost:8000/api/brandawareness/", {
@@ -50,45 +44,8 @@ export default function BusinessAwarness() {
       message.success("Brand Awareness generated successfully!");
     } catch (error) {
       console.error("Error:", error);
-    } finally {
-      setLoading(false);
     }
   };
-
-  const handleSave = async () => {
-    const token = JSON.parse(localStorage.getItem("user"))?.access;
-
-    if (!token) {
-      message.error("You must be logged in to save content.");
-      return;
-    }
-
-    try {
-      const response = await fetch("http://localhost:8000/api/save-brand-awareness-content/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          content: data?.generated_content,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        message.success("Brand awareness content saved successfully!");
-      } else {
-        console.error(result);
-        message.error("Failed to save content.");
-      }
-    } catch (error) {
-      console.error("Error saving content:", error);
-      message.error("Something went wrong while saving.");
-    }
-  };
-
 
   return (
     <div className="mt-5 businessNameGeneratorWrraper">
@@ -149,7 +106,7 @@ export default function BusinessAwarness() {
               </Form.Item>
 
               <Form.Item className="flex justify-end col-span-2">
-                <Button type="primary" htmlType="submit" block loading={loading}>
+                <Button type="primary" htmlType="submit" block>
                   Generate
                 </Button>
               </Form.Item>
@@ -157,36 +114,26 @@ export default function BusinessAwarness() {
           </Form>
         </>
       ) : (
-        <div className="max-w-[940px] mx-auto py-16">
-          <div className="bg-white p-3 border border-gray-200 rounded-2xl shadow-lg transform -translate-y-40">
-            <h1>Your Brand Awareness Content</h1>
-            <div className="px-4 py-5">
-              <h2 className="text-[#1B2559] text-lg font-bold mb-4">
-                {data?.business?.industry || "Your Industry"}
-              </h2>
-              <div className="prose prose-lg max-w-full text-[#1B2559]">
-                <ReactMarkdown>{data?.generated_content || ""}</ReactMarkdown>
-              </div>
-            </div>
+        <div className="container py-16 bg-white">
+          <h1 className="my-8">Your Brand Awareness Content</h1>
+          <div className="mx-auto max-w-[850px]">
+            <h2 className="text-[#1B2559] text-lg font-bold">
+              {data?.business?.industry}
+            </h2>
+            <h2 className="text-[#1B2559] mt-6">{data?.generated_content}</h2>
+          </div>
 
-            <div className="flex w-full justify-end items-end gap-5 pe-5 mt-10">
-              <Button
-                type="primary"
-                className="!bg-white border !text-black"
-                onClick={regenrate}
-                loading={loading}
-              >
-                ReGenerate
-              </Button>
-              <Button
-                type="primary"
-                block
-                className="!w-24"
-                onClick={handleSave}
-              >
-                Save
-              </Button>
-            </div>
+          <div className="flex w-full justify-end gap-5 pe-5 mt-10">
+            <Button type="primary" onClick={regenrate}>
+              ReGenerate
+            </Button>
+            <Button
+              className="!bg-white border !text-black"
+              type="primary"
+              // TODO: Implement Save Logic
+            >
+              Save
+            </Button>
           </div>
         </div>
       )}
